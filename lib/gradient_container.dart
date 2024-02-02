@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
 class GradientContainer extends StatelessWidget{
-  const GradientContainer({super.key});
+  const GradientContainer(this.text, {super.key});
+
+  final String text;
+
   @override
   Widget build(context) {
     return Container(
@@ -12,8 +15,8 @@ class GradientContainer extends StatelessWidget{
             colors: [Colors.orangeAccent, Colors.deepOrangeAccent]
           ),
         ),
-        child: const Center(
-          child: Text('Sample', style: TextStyle(
+        child: Center(
+          child: Text('Accel data:\n $text', style: const TextStyle(
             color: Colors.white,
             fontSize: 24
                 ),

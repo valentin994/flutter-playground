@@ -2,20 +2,48 @@ import 'package:flutter/material.dart';
 import 'gradient_container.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 
-
-var valueList = [];
-var textToShow = "No data";
-void accelData() {
-    accelerometerEventStream(samplingPeriod: SensorInterval.normalInterval).listen((event) {
-        textToShow = event.x.toString();
-        });
+class AccelerometerWidget extends StatefulWidget {
+    const AccelerometerWidget({super.key});
+    @override
+    State<StatefulWidget> createState() {
+        return _AccelerometerState();
+    }    
 }
+
+class _AccelerometerState extends State<AccelerometerWidget> {
+    var valueList = [];
+
+    @override
+    void initState() {
+      super.initState();
+
+      accelerometerEventStream(samplingPeriod: const Duration(seconds: 2)).listen(
+      (AccelerometerEvent event) {
+            print(event);
+          });
+    }
+
+    @override
+    Widget build(context) {
+        return const Text('Accel data:', style: TextStyle(
+                  color: Colors.orangeAccent,
+                  fontSize: 24
+                ),
+        );
+    }
+}
+
 
 void main() {
   runApp(
    const MaterialApp(
     home: Scaffold(
-      body: GradientContainer(), 
+      body: Column(
+        children: [
+          GradientContainer("Something"),
+          AccelerometerWidget()
+            ],
+          ), 
         ),
       ),
     );
