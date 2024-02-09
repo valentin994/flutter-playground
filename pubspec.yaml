@@ -29,6 +29,8 @@ environment:
 # versions available, run `flutter pub outdated`.
 dependencies:
   sensors_plus: ^4.0.2
+  path_provider: ^2.1.2
+  logger: ^2.0.2+1 
   flutter:
     sdk: flutter
 
@@ -38,7 +40,6 @@ dependencies:
   cupertino_icons: ^1.0.2
 
 dev_dependencies:
-  logging: ^1.2.0
   flutter_test:
     sdk: flutter
 
