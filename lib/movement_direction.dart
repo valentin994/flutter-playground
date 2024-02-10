@@ -114,8 +114,16 @@ class _MovementDetection extends State<MovementDetection>{
   }
   @override
   Widget build(context) {
-      return Text("x = $x\n y = $y\n z = $z\n UserAccelerometer\n x = $userX\n y = $userY\n z = $userZ\n Gyro:\n x = $gyroX\ny = $gyroY\n z = $gyroZ\nMag\nx = $magX\ny = $magY\nz = $magZ", 
-        style: const TextStyle(color: Colors.white70),
+      return Column(
+      children: [
+        OutlinedButton(onPressed: () {},  
+        style: ButtonStyle(foregroundColor: MaterialStateProperty.all(Colors.white),
+        shadowColor: MaterialStateProperty.all(Colors.white),
+        side: MaterialStateProperty.all(const BorderSide(color: Colors.white))
+          ),
+        child: const Text("Start")
+        )
+      ],
     );
   }
 }
