@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hello_world/movement_direction.dart';
 
 void main(){
+    WidgetsFlutterBinding.ensureInitialized();
     runApp(MaterialApp(title: "Test App", 
       home: Scaffold(body: Container(
        decoration: const BoxDecoration(
@@ -27,3 +28,5 @@ void main(){
         ),
     );
 }
+
+

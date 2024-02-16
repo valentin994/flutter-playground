@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -36,94 +37,81 @@ class MovementDetection extends StatefulWidget{
 }
 
 class _MovementDetection extends State<MovementDetection>{
-  String directionOnXAxis = "", directionOnYAxis = "", directionOnZAxis = "";
-  Map accelMap = {'x': [], 'y': [], 'z': []};
-  bool saved = false;
-  int counter = 0;
-  double x = 0, y = 0, z = 0;
-  double userX = 0, userY = 0, userZ = 0;
-  double gyroX = 0, gyroY = 0, gyroZ = 0;
-  double magX = 0, magY = 0, magZ = 0;
+  UserAccelerometerEvent? _userAccelerometerEvent;
+  DateTime? _userAccelerometerUpdateTime;
+  int? _userAccelerometerLastInterval;
+  final _streamSubscriptions = <StreamSubscription<dynamic>>[];
+  String userX = "";
+  Duration duration = const Duration(seconds: 5);
+  String num = '';
+  List list = [];
+  void showAccel() {
+      const Duration duration = Duration(seconds: 5);
+      DateTime endTime = DateTime.now().add(duration);
+
+      Timer.periodic(Duration(milliseconds: 10), (Timer timer) {
+        if (DateTime.now().isBefore(endTime)) {
+          num = _userAccelerometerEvent?.x.toStringAsFixed(3)??'';
+          list.add(num);
+          print('Function running...');
+        } else {
+          timer.cancel();
+          var listLen = list.length;
+          print('Number of items $listLen');
+        }
+      });
+    }
+  static const Duration _ignoreDuration = Duration(milliseconds: 20);
+  Duration sensorInterval = SensorInterval.normalInterval;
+  @override
+  Widget build(context) {
+      return Column(children: [
+            Text(_userAccelerometerEvent?.x.toStringAsFixed(1) ?? '?'),
+            Text(num),
+            OutlinedButton(onPressed: showAccel, child: const Text('Click me senpai'))
+        ],
+    );
+  }
+
+ @override
+  void dispose() {
+    super.dispose();
+    for (final subscription in _streamSubscriptions) {
+      subscription.cancel();
+    }
+  }
 
   @override
   void initState() {
-      accelerometerEventStream().listen(
-        (AccelerometerEvent event) {
-           if(counter < 10000){
-               accelMap['x'].add(event.x);
-               accelMap['y'].add(event.y);
-               accelMap['z'].add(event.z);
-           }
-           if(counter==9999 && saved == false){
-             print('I am trying to save');  
-             widget.storage.writeCounter(accelMap);
-             print('I HAVE SAVED');
-             print(accelMap); 
-             saved = true;
-           }
-           counter++;
-           x = event.x;
-           y = event.y;
-           z = event.z;
-
-           if (x > 1){
-               directionOnXAxis = "Forward";
-           }else if (x < 1){
-               directionOnXAxis = "Back";
-           }
-           setState(() {
-
-               });
-          },
-        );
-
-      userAccelerometerEventStream().listen(
+    super.initState();
+    _streamSubscriptions.add(
+      userAccelerometerEventStream(samplingPeriod: sensorInterval).listen(
         (UserAccelerometerEvent event) {
-           userX = event.x;
-           userY = event.y;
-           userZ = event.z;
-           setState(() {
-
-               });
-          },
-        );
-
-      gyroscopeEventStream().listen(
-        (GyroscopeEvent event) {
-           gyroX = event.x;
-           gyroY = event.y;
-           gyroZ = event.z;
-           setState(() {
-
-               });
-          },
-        );
-
-      magnetometerEventStream().listen(
-        (MagnetometerEvent event) {
-           magX = event.x;
-           magY = event.y;
-           magZ = event.z;
-           setState(() {
-
-               });
-          },
-        );
-
-      super.initState();
-  }
-  @override
-  Widget build(context) {
-      return Column(
-      children: [
-        OutlinedButton(onPressed: () {},  
-        style: ButtonStyle(foregroundColor: MaterialStateProperty.all(Colors.white),
-        shadowColor: MaterialStateProperty.all(Colors.white),
-        side: MaterialStateProperty.all(const BorderSide(color: Colors.white))
-          ),
-        child: const Text("Start")
-        )
-      ],
+          final now = DateTime.now();
+          setState(() {
+            _userAccelerometerEvent = event;
+            if (_userAccelerometerUpdateTime != null) {
+              final interval = now.difference(_userAccelerometerUpdateTime!);
+              if (interval > _ignoreDuration) {
+                _userAccelerometerLastInterval = interval.inMilliseconds;
+              }
+            }
+          });
+          _userAccelerometerUpdateTime = now;
+        },
+        onError: (e) {
+          showDialog(
+              context: context,
+              builder: (context) {
+                return const AlertDialog(
+                  title: Text("Sensor Not Found"),
+                  content: Text(
+                      "It seems that your device doesn't support User Accelerometer Sensor"),
+                );
+              });
+        },
+        cancelOnError: true,
+      ),
     );
   }
 }
