@@ -97,7 +97,7 @@ class _MovementDetection extends State<MovementDetection>{
           storage.writeCounter(userAccelMap, "user_accel_map-$mark.json");
           storage.writeCounter(accelMap, "accel_map-$mark.json");
           storage.writeCounter(gyroMap, "gyro_map-$mark.json");
-          storage.writeCounter(magnetoMap, "magneto_map-$mark.json");
+          storage.writeCounter(userAccelMap, "magneto_map-$mark.json");
         }
       });
     }
@@ -152,7 +152,7 @@ class _MovementDetection extends State<MovementDetection>{
         cancelOnError: true,
       ),
     );
- _streamSubscriptions.add(
+    _streamSubscriptions.add(
       accelerometerEventStream(samplingPeriod: sensorInterval).listen(
         (AccelerometerEvent event) {
           final now = DateTime.now();
@@ -166,6 +166,17 @@ class _MovementDetection extends State<MovementDetection>{
             }
           });
           _accelerometerUpdateTime = now;
+        },
+        onError: (e) {
+          showDialog(
+              context: context as BuildContext,
+              builder: (context) {
+                return const AlertDialog(
+                  title: Text("Sensor Not Found"),
+                  content: Text(
+                      "It seems that your device doesn't support Accelerometer Sensor"),
+                );
+              });
         },
         cancelOnError: true,
       ),
@@ -185,6 +196,17 @@ class _MovementDetection extends State<MovementDetection>{
           });
           _gyroscopeUpdateTime = now;
         },
+        onError: (e) {
+          showDialog(
+              context: context as BuildContext,
+              builder: (context) {
+                return const AlertDialog(
+                  title: Text("Sensor Not Found"),
+                  content: Text(
+                      "It seems that your device doesn't support Gyroscope Sensor"),
+                );
+              });
+        },
         cancelOnError: true,
       ),
     );
@@ -202,6 +224,17 @@ class _MovementDetection extends State<MovementDetection>{
             }
           });
           _magnetometerUpdateTime = now;
+        },
+        onError: (e) {
+          showDialog(
+              context: context as BuildContext,
+              builder: (context) {
+                return const AlertDialog(
+                  title: Text("Sensor Not Found"),
+                  content: Text(
+                      "It seems that your device doesn't support Magnetometer Sensor"),
+                );
+              });
         },
         cancelOnError: true,
       ),
