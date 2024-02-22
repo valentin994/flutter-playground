@@ -97,7 +97,7 @@ class _MovementDetection extends State<MovementDetection>{
           storage.writeCounter(userAccelMap, "user_accel_map-$mark.json");
           storage.writeCounter(accelMap, "accel_map-$mark.json");
           storage.writeCounter(gyroMap, "gyro_map-$mark.json");
-          storage.writeCounter(userAccelMap, "magneto_map-$mark.json");
+          storage.writeCounter(magnetoMap, "magneto_map-$mark.json");
         }
       });
     }
