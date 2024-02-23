@@ -57,7 +57,7 @@ class _MovementDetection extends State<MovementDetection>{
   int? _gyroscopeLastInterval;
   int? _magnetometerLastInterval;
 
-
+  final movementName = TextEditingController();
 
   String running = "no";
   Duration duration = const Duration(seconds: 5);
@@ -106,6 +106,8 @@ class _MovementDetection extends State<MovementDetection>{
   @override
   Widget build(context) {
       return Column(children: [
+            TextField(controller: movementName),
+            Text(movementName.text),
             Text("Am i running: $running"),
             OutlinedButton(onPressed: showAccel, child: const Text('Click me senpai'))
         ],
@@ -114,6 +116,7 @@ class _MovementDetection extends State<MovementDetection>{
 
  @override
   void dispose() {
+    movementName.dispose();
     super.dispose();
     for (final subscription in _streamSubscriptions) {
       subscription.cancel();
