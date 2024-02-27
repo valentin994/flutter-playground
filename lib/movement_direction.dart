@@ -121,7 +121,7 @@ class _MovementDetection extends State<MovementDetection> {
               FilteringTextInputFormatter.digitsOnly
             ],
             onChanged: (value) {
-              if (value.isNotEmpty){
+              if (value.isNotEmpty) {
                 num = int.parse(value);
               }
             },
